@@ -1,4 +1,8 @@
 "use strict";
+// var d3 = require('d3');
+// var PriorityQueue = require('js-priority-queue');
+// browserify js/terrain.js -o bundle.js
+
 function runif(lo, hi) {
     return lo + Math.random() * (hi - lo);
 }
@@ -726,10 +730,13 @@ function drawPaths(svg, cls, paths) {
 
 function visualizeSlopes(svg, render) {
     var h = render.h;
+    // console.log(h);
     var strokes = [];
     var r = 0.25 / Math.sqrt(h.length);
-    for (var i = 0; i < h.length; i++) {
+    //h.length
+    for (var i = 0; i < 5000; i++) {
         if (h[i] <= 0 || isnearedge(h.mesh, i)) continue;
+        if (h[i] <= 0) continue;
         var nbs = neighbours(h.mesh, i);
         nbs.push(i);
         var s = 0;
@@ -769,8 +776,19 @@ function visualizeSlopes(svg, render) {
         .attr('y1', function (d) {return 1000*d[0][1]})
         .attr('x2', function (d) {return 1000*d[1][0]})
         .attr('y2', function (d) {return 1000*d[1][1]})
+    
+    // drawTopo(h.mesh.vxs, svg)
 }
 
+function drawTopo(lineData, svg) {
+  console.log("draw topo");
+  var p = d3.path();
+  console.log(lineData);
+  for (var i = 0; i < lineData.length - 1; i++) {
+    // console.log(lineData[i][0]);
+    p.arcTo(1000*lineData[i][0], 1000*lineData[i][1], 1000*lineData[i+1][0], 1000*lineData[i+1][1], 2 * Math.PI);
+  }
+}
 
 function visualizeContour(h, level) {
     level = level || 0;
@@ -1028,6 +1046,7 @@ function drawLabels(svg, render) {
         .raise();
 
 }
+
 function drawMap(svg, render) {
     render.rivers = getRivers(render.h, 0.01);
     render.coasts = contour(render.h, 0);

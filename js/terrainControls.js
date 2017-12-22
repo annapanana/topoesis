@@ -1,8 +1,8 @@
 
 function addSVG(div) {
     return div.insert("svg", ":first-child")
-        .attr("height", 400)
-        .attr("width", 400)
+        .attr("height", 1000)
+        .attr("width", 1000)
         .attr("viewBox", "-500 -500 1000 1000");
 }
 var meshDiv = d3.select("div#mesh");
@@ -309,6 +309,7 @@ function cityDraw() {
 cityDiv.append("button")
     .text("Generate random heightmap")
     .on("click", function () {
+        console.log("city render");
         cityRender = newCityRender();
         cityDraw();
     });
