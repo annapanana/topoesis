@@ -1,5 +1,4 @@
 "use strict";
-
 function runif(lo, hi) {
     return lo + Math.random() * (hi - lo);
 }
