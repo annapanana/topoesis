@@ -4,8 +4,11 @@ $(() => {
                 .attr("height", 1000)
                 .attr("width", 1000)
                 .attr("viewBox", "-500 -500 1000 1000");
-  const meshVxs = zero(generateGoodMesh(100));
-  visualizeVoronoi(mesh, meshVxs, -1, 1);
+  // Create mesh, change complexity with param
+  const meshVxs = zero(generateGoodMesh(5000));
+  // Add mountains, the numbers is the number of mtns added
+  const meshWithMountains = add(meshVxs, mountains(meshVxs.mesh, 100));
+  visualizeVoronoi(mesh, meshWithMountains, -1, 1);
 })
 
 var defaultExtent = {
@@ -129,16 +132,33 @@ function zero(mesh) {
     return z;
 }
 
-// function drawPaths(svg, cls, paths) {
-//     var paths = svg.selectAll('path.' + cls).data(paths)
-//     paths.enter()
-//             .append('path')
-//             .classed(cls, true)
-//     paths.exit()
-//             .remove();
-//     svg.selectAll('path.' + cls)
-//         .attr('d', makeD3Path);
-// }
+function mountains(mesh, n, r) {
+    r = r || 0.05;
+    var mounts = [];
+    for (var i = 0; i < n; i++) {
+        mounts.push([mesh.extent.width * (Math.random() - 0.5), mesh.extent.height * (Math.random() - 0.5)]);
+    }
+    var newvals = zero(mesh);
+    for (var i = 0; i < mesh.vxs.length; i++) {
+        var p = mesh.vxs[i];
+        for (var j = 0; j < n; j++) {
+            var m = mounts[j];
+            newvals[i] += Math.pow(Math.exp(-((p[0] - m[0]) * (p[0] - m[0]) + (p[1] - m[1]) * (p[1] - m[1])) / (2 * r * r)), 2);
+        }
+    }
+    return newvals;
+}
+
+function add() {
+    var n = arguments[0].length;
+    var newvals = zero(arguments[0].mesh);
+    for (var i = 0; i < n; i++) {
+        for (var j = 0; j < arguments.length; j++) {
+            newvals[i] += arguments[j][i];
+        }
+    }
+    return newvals;
+}
 
 function makeD3Path(path) {
     var p = d3.path();
