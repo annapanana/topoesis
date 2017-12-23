@@ -5,10 +5,11 @@ $(() => {
                 .attr("width", 1000)
                 .attr("viewBox", "-500 -500 1000 1000");
   // Create mesh, change complexity with param
-  const meshVxs = zero(generateGoodMesh(5000));
+  const meshVxs = zero(generateGoodMesh(2000));
   // Add mountains, the numbers is the number of mtns added
   const meshWithMountains = add(meshVxs, mountains(meshVxs.mesh, 100));
   visualizeVoronoi(mesh, meshWithMountains, -1, 1);
+  // visualizeContour(mesh);
 })
 
 var defaultExtent = {
@@ -115,7 +116,7 @@ function visualizeVoronoi(svg, field, lo, hi) {
     
     tris.exit()
         .remove();
-
+    
     svg.selectAll('path.field')
         .attr('d', makeD3Path)
         .style('fill', function (d, i) {
@@ -167,4 +168,85 @@ function makeD3Path(path) {
         p.lineTo(1000*path[i][0], 1000*path[i][1]);
     }
     return p.toString();
+}
+
+// NEW FUNCTIONALITY
+function visualizeContour(h, level) {
+    level = level || 0;
+    var links = contour(h, level);
+    drawPaths('coast', links);
+}
+
+function contour(h, level) {
+  console.log(h);
+    level = level || 0;
+    var edges = [];
+    for (var i = 0; i < h.mesh.edges.length; i++) {
+        var e = h.mesh.edges[i];
+        if (e[3] == undefined) continue;
+        if (isnearedge(h.mesh, e[0]) || isnearedge(h.mesh, e[1])) continue;
+        if ((h[e[0]] > level && h[e[1]] <= level) ||
+            (h[e[1]] > level && h[e[0]] <= level)) {
+            edges.push([e[2], e[3]]);
+        }
+    }
+    return mergeSegments(edges);
+}
+
+function isnearedge(mesh, i) {
+    var x = mesh.vxs[i][0];
+    var y = mesh.vxs[i][1];
+    var w = mesh.extent.width;
+    var h = mesh.extent.height;
+    return x < -0.45 * w || x > 0.45 * w || y < -0.45 * h || y > 0.45 * h;
+}
+
+function mergeSegments(segs) {
+    var adj = {};
+    for (var i = 0; i < segs.length; i++) {
+        var seg = segs[i];
+        var a0 = adj[seg[0]] || [];
+        var a1 = adj[seg[1]] || [];
+        a0.push(seg[1]);
+        a1.push(seg[0]);
+        adj[seg[0]] = a0;
+        adj[seg[1]] = a1;
+    }
+    var done = [];
+    var paths = [];
+    var path = null;
+    while (true) {
+        if (path == null) {
+            for (var i = 0; i < segs.length; i++) {
+                if (done[i]) continue;
+                done[i] = true;
+                path = [segs[i][0], segs[i][1]];
+                break;
+            }
+            if (path == null) break;
+        }
+        var changed = false;
+        for (var i = 0; i < segs.length; i++) {
+            if (done[i]) continue;
+            if (adj[path[0]].length == 2 && segs[i][0] == path[0]) {
+                path.unshift(segs[i][1]);
+            } else if (adj[path[0]].length == 2 && segs[i][1] == path[0]) {
+                path.unshift(segs[i][0]);
+            } else if (adj[path[path.length - 1]].length == 2 && segs[i][0] == path[path.length - 1]) {
+                path.push(segs[i][1]);
+            } else if (adj[path[path.length - 1]].length == 2 && segs[i][1] == path[path.length - 1]) {
+                path.push(segs[i][0]);
+            } else {
+                continue;
+            }
+            done[i] = true;
+            changed = true;
+            break;
+        }
+        if (!changed) {
+            paths.push(path);
+            path = null;
+        }
+    }
+    return paths;
 }

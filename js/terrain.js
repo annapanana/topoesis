@@ -777,17 +777,6 @@ function visualizeSlopes(svg, render) {
         .attr('x2', function (d) {return 1000*d[1][0]})
         .attr('y2', function (d) {return 1000*d[1][1]})
     
-    // drawTopo(h.mesh.vxs, svg)
-}
-
-function drawTopo(lineData, svg) {
-  console.log("draw topo");
-  var p = d3.path();
-  console.log(lineData);
-  for (var i = 0; i < lineData.length - 1; i++) {
-    // console.log(lineData[i][0]);
-    p.arcTo(1000*lineData[i][0], 1000*lineData[i][1], 1000*lineData[i+1][0], 1000*lineData[i+1][1], 2 * Math.PI);
-  }
 }
 
 function visualizeContour(h, level) {
