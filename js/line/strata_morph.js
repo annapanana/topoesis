@@ -13,7 +13,3 @@ setTimeout(() => {
     tl.to(lines[i], .5, {morphSVG:paths[i]})
   }
 }, 5000)
-
-setTimeout(() => {
-  tl.to(text, 2, {opacity:1})
-}, 5000)
