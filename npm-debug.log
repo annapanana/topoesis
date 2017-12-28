@@ -2,8 +2,7 @@
 1 verbose cli [ '/usr/local/bin/node',
 1 verbose cli   '/usr/local/bin/npm',
 1 verbose cli   'install',
-1 verbose cli   '--save',
-1 verbose cli   'topojson' ]
+1 verbose cli   'compass-sass-mixins' ]
 2 info using npm@3.10.10
 3 info using node@v6.11.3
 4 silly loadCurrentTree Starting
@@ -25,7 +24,7 @@
 11 verbose stack     at FSReqWrap.readFileAfterClose [as oncomplete] (fs.js:444:12)
 12 verbose cwd /Users/annalotko/Documents/Animation/topoesis
 13 error Darwin 16.7.0
-14 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "--save" "topojson"
+14 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "compass-sass-mixins"
 15 error node v6.11.3
 16 error npm  v3.10.10
 17 error file /Users/annalotko/Documents/Animation/topoesis/package.json

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Texture Text</title>
+    <link rel="stylesheet" type="text/css" href="./styles/texture_test.css">
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+    <script src="./js/texture/texture_test.js" defer></script>
+  </head>
+  <body>
+    <div class="thing" />
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" >
+        <defs>
+          <filter id="bump" x="0" y="0">
+              <feImage xlink:href="./assets/texture_test_map.png" result="texture" />
+              <feImage xlink:href="./assets/texture_test_normals_03.png" result="bumpMap"/>
+              <feColorMatrix in="bumpMap" type="luminanceToAlpha" result="bumpMap"/>
+
+              <feDiffuseLighting in="bumpMap"
+                              surfaceScale="2.5"
+                              diffuseConstant="1"
+                              result="shading">
+                <fePointLight id="light" x="100" y="100" z="50">
+
+                </fePointLight>
+              </feDiffuseLighting>
+
+            <feBlend in="texture" in2="shading" mode="multiply" result="lit"/>
+
+          </filter>
+        </defs>
+    </svg>
+  </body>
+</html>
